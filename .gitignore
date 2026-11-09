@@ -25,13 +25,23 @@ ios/Flutter/App.framework
 ios/Pods/
 ios/.symlinks/
 
-# IDE / Secrets
+# IDE / OS
 .idea/
 .vscode/
 *.iml
 *.swp
 *.lock
+.DS_Store
+
+# Secrets & Environment Configurations
 .env
 .env.*
 !.env.example
-.DS_Store
+.env.json
+!.env.json.example
+*.key
+*.keystore
+*.jks
+key.properties
+google-services.json
+GoogleService-Info.plist

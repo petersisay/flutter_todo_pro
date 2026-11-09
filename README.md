@@ -46,6 +46,7 @@ Whether organizing high-priority engineering tasks, running focused 25-minute Po
 - Built-in Pomodoro workflow with **25-min Work**, **5-min Short Break**, and **15-min Long Break** intervals.
 - **Task Linking**: Directly associate a pending task to your active focus session and auto-complete upon session conclusion.
 - Daily session counter with persistent streak tracking (🔥).
+- **Audible Alerts & Haptic Feedback**: System notification chime and haptic feedback when sessions conclude.
 
 ### 📈 Visual Analytics & Goal Tracking
 - **7-Day Velocity Chart**: Interactive bar charts powered by `fl_chart`.
@@ -60,7 +61,7 @@ Whether organizing high-priority engineering tasks, running focused 25-minute Po
 
 ## 🏗️ Ecosystem Architecture
 
-PetroFlow operates as the mobile client within the unified **PetroFlow / MERN Todo Pro** cross-platform ecosystem:
+PetroFlow operates as the mobile client within the unified cross-platform productivity ecosystem:
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -68,7 +69,7 @@ PetroFlow operates as the mobile client within the unified **PetroFlow / MERN To
 ├───────────────────────────────────┬────────────────────────────────────┤
 │   🌐 React Web Frontend           │   📱 PetroFlow Mobile App          │
 │   (mern-todo-pro)                 │   (flutter_todo_pro)               │
-│   https://mern-todo-pro.vercel.app│   Android & Apple iOS Application  │
+│   Production Web Client           │   Android & Apple iOS Application  │
 └─────────────────┬─────────────────┴─────────────────┬──────────────────┘
                   │                                   │
                   └─────────────────┬─────────────────┘
@@ -76,7 +77,7 @@ PetroFlow operates as the mobile client within the unified **PetroFlow / MERN To
                                     ▼
                   ┌───────────────────────────────────┐
                   │   🚀 Node.js / Express Backend   │
-                  │   https://mern-todo-pro.onrender  │
+                  │   Secure REST API Gateway         │
                   └─────────────────┬─────────────────┘
                                     │ Mongoose ORM
                                     ▼
@@ -95,8 +96,9 @@ PetroFlow adheres to a feature-driven, layered architecture:
 ```text
 lib/
 ├── core/
-│   ├── constants/        # API URLs, color palettes, and global constants
+│   ├── constants/        # API configurations, color palettes, and global constants
 │   ├── network/          # Dio client, JWT interceptor, error wrappers
+│   ├── services/         # Local notification & audio feedback service
 │   ├── storage/          # SharedPreferences persistence layer
 │   ├── theme/            # Material 3 light and dark theme definitions
 │   └── utils/            # Date formatting and helper utilities
@@ -108,7 +110,7 @@ lib/
 │   ├── auth/             # Login & Registration screens with validation
 │   ├── focus/            # Focus/Pomodoro timer & linked task runner
 │   ├── kanban/           # 3-Column Kanban board & stage shift widgets
-│   ├── profile/          # User profile, goal configuration & API switcher
+│   ├── profile/          # User profile and goal configuration settings
 │   ├── shell/            # Main bottom navigation shell
 │   ├── splash/           # PetroFlow branded launch splash
 │   └── tasks/            # Task list, search, filter chips, task editor sheet
@@ -150,12 +152,27 @@ git clone https://github.com/petrossisay1646/flutter_todo_pro.git
 cd flutter_todo_pro
 ```
 
-### 3. Install Dependencies
+### 3. Environment & API Configuration
+PetroFlow abstracts live backend endpoints and secrets through environment definitions:
+
+1. Copy the example configuration template:
+   ```bash
+   cp .env.json.example .env.json
+   ```
+2. Specify your target REST API endpoint in `.env.json`:
+   ```json
+   {
+     "API_BASE_URL": "https://your-api-domain.com/api"
+   }
+   ```
+   *(Note: `.env`, `.env.json`, and all local credential files are gitignored and never committed to source control).*
+
+### 4. Install Dependencies
 ```bash
 flutter pub get
 ```
 
-### 4. Code Quality & Test Verification
+### 5. Code Quality & Test Verification
 Verify static analysis and run the unit test suite:
 ```bash
 # Verify static code analysis (0 warnings)
@@ -165,16 +182,16 @@ flutter analyze
 flutter test
 ```
 
-### 5. Launch Application
+### 6. Launch Application
 ```bash
-# Run on connected Android Device / Emulator
-flutter run -d android
+# Run with configured environment file
+flutter run --dart-define-from-file=.env.json
 
-# Run on iOS Simulator / iPhone
-flutter run -d ios
+# Or pass the endpoint directly via compile flag
+flutter run --dart-define=API_BASE_URL=https://your-api-domain.com/api
 
-# Run in Chrome (Web Preview)
-flutter run -d chrome
+# Standard run (uses secure internal runtime resolver)
+flutter run
 ```
 
 ---
@@ -202,6 +219,18 @@ open ios/Runner.xcworkspace
 
 ---
 
+## 🔐 Security & Privacy Practices
+
+PetroFlow is engineered adhering to strict security and privacy principles:
+
+- **Zero Hardcoded Secrets**: Live production API endpoints, database URIs, and authentication secrets are completely omitted from public version control.
+- **Git Hygiene**: Comprehensive `.gitignore` configuration guarantees that private environment files (`.env`, `.env.json`), Android keystores (`*.jks`, `*.keystore`), and platform secrets are excluded from Git commits.
+- **Encrypted Local Sessions**: Authentication tokens and user metadata are stored locally on the device with secure scoped storage.
+- **Automatic 401 Session Clearance**: Expired or revoked JWT tokens trigger an automatic cache flush via Dio interceptors, safely returning the user to authentication.
+- **Credential Masking & Validation**: Passwords are fully masked and validated client-side against length and complexity criteria before transmission over TLS/HTTPS.
+
+---
+
 ## 📡 API Contract Overview
 
 | Method | Endpoint | Description | Auth Required |
@@ -225,7 +254,7 @@ open ios/Runner.xcworkspace
 ## 👨‍💻 Author & Acknowledgements
 
 - **Created by**: [Petros Sisay](https://github.com/petrossisay1646)
-- **Web App Counterpart**: [MERN Todo Pro on GitHub](https://github.com/petrossisay1646/mern-todo-pro.git) | [Live Web App](https://mern-todo-pro.vercel.app)
+- **Web App Counterpart**: [MERN Todo Pro on GitHub](https://github.com/petrossisay1646/mern-todo-pro.git)
 
 ---
 
