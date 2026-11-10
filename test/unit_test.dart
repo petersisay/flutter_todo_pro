@@ -9,10 +9,9 @@ import 'package:flutter_todo_pro/data/models/user_model.dart';
 
 void main() {
   group('PetroFlow Core Constants Tests', () {
-    test('API Base URL is a valid, secure HTTPS endpoint', () {
-      expect(ApiConstants.defaultBaseUrl, isNotEmpty);
+    test('Production API Base URL is verified HTTPS Render URL', () {
+      expect(ApiConstants.defaultBaseUrl, 'https://mern-todo-pro.onrender.com/api');
       expect(ApiConstants.defaultBaseUrl.startsWith('https://'), isTrue);
-      expect(Uri.tryParse(ApiConstants.defaultBaseUrl)?.hasAbsolutePath, isTrue);
     });
 
     test('Brand colors are correctly defined', () {
